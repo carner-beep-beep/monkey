@@ -1,4 +1,4 @@
-import interpreter.token as tok
+import token as tok
 
 class Lexer():
     def __init__(self, source):
