@@ -21,6 +21,18 @@ class Lexer():
             token = tok.Token(tok.ASSIGN, self.c)
         elif self.c == '+':
             token = tok.Token(tok.PLUS, self.c)
+        elif self.c == '-':
+            token = tok.Token(tok.MINUS, self.c)
+        elif self.c == '!':
+            token = tok.Token(tok.BANG, self.c)
+        elif self.c == '*':
+            token = tok.Token(tok.ASTERISK, self.c)
+        elif self.c == '/':
+            token = tok.Token(tok.SLASH, self.c)
+        elif self.c == '<':
+            token = tok.Token(tok.LT, self.c)
+        elif self.c == '>':
+            token = tok.Token(tok.GT, self.c)
         elif self.c == ',':
             token = tok.Token(tok.COMMA, self.c)
         elif self.c == ';':

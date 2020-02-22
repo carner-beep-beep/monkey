@@ -8,6 +8,13 @@ INT         = 'INT'
 
 ASSIGN      = '='
 PLUS        = '+'
+MINUS       = '-'
+BANG        = '!'
+ASTERISK    = '*'
+SLASH       = '/'
+
+LT          = '<'
+GT          = '>'
 
 COMMA       = ','
 SEMICOLON   = ';'
@@ -24,7 +31,6 @@ LET         = 'LET'
 keywords = {'fn': FUNCTION, 
             'let': LET}
 
-# cached??
 def lookup_keyword(identifier):
     keyword = keywords.get(identifier)
     if keyword:
