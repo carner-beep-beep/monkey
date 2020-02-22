@@ -1,5 +1,6 @@
-from monkey.interpreter import lexer
 from monkey.interpreter import token
+from monkey.interpreter import lexer
+
 
 def test_lexer():
     program_input = '''let five = 5;
@@ -56,7 +57,6 @@ def test_lexer():
     for expected_token in expected_tokens:
         tok = l.next_token()
 
-        assert tok.type == expected_token[0], 'token types not matching'
+        assert tok.type == expected_token[0], f'got: {tok.type}, expected: {expected_token[0]}'
 
         assert tok.literal == expected_token[1], 'token literals not matching' 
-

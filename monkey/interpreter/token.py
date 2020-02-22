@@ -21,6 +21,16 @@ RBRACE      = '}'
 FUNCTION    = 'FUNCTION'
 LET         = 'LET'
 
+keywords = {'fn': FUNCTION, 
+            'let': LET}
+
+# cached??
+def lookup_keyword(identifier):
+    keyword = keywords.get(identifier)
+    if keyword:
+        return keyword
+    return IDENT
+
 class Token():
     def __init__(self, type=None, literal=None):
         self.type = type
