@@ -17,14 +17,23 @@ class Lexer():
         print(f'current char: {self.c}')
 
         if self.c == '=':
-            #print('in assign block')
-            token = tok.Token(tok.ASSIGN, self.c)
+            if self.peek_char() == '=':
+                c = self.c
+                self.read_next_char()
+                token = tok.Token(tok.EQ, c + self.c)
+            else:
+                token = tok.Token(tok.ASSIGN, self.c)
         elif self.c == '+':
             token = tok.Token(tok.PLUS, self.c)
         elif self.c == '-':
             token = tok.Token(tok.MINUS, self.c)
         elif self.c == '!':
-            token = tok.Token(tok.BANG, self.c)
+            if self.peek_char() == '=':
+                c = self.c
+                self.read_next_char()
+                token = tok.Token(tok.NOT_EQ, c + self.c)
+            else:
+                token = tok.Token(tok.BANG, self.c)
         elif self.c == '*':
             token = tok.Token(tok.ASTERISK, self.c)
         elif self.c == '/':
@@ -95,3 +104,9 @@ class Lexer():
         if isinstance(self.c, str):
             while isinstance(self.c, str) and self.c.isspace():
                 self.read_next_char()
+
+    def peek_char(self):
+        if self.next_position >= len(self.source):
+            return 0
+        else:
+            return self.source[self.next_position]
