@@ -11,10 +11,6 @@ class Lexer():
         token = None
 
         self.skip_whitespace()
-        #print(f'next_token start: c = {self.c}, type = {type(self.c)}, len = {len(self.c)}')
-
-        #print(f"conditional { self.c == '=' }")
-        print(f'current char: {self.c}')
 
         if self.c == '=':
             if self.peek_char() == '=':
@@ -57,27 +53,19 @@ class Lexer():
         elif self.c == 0:
             token = tok.Token(tok.EOF, str(0))
         else:
-            print(f'In else statement {self.c}')
             if self.c.isalpha():
                 literal = self.read_identifier()
                 tok_type = tok.lookup_keyword(literal)
-                #print(f'identifier literal: {literal}, type: {tok_type}')
-                print(tok_type, literal)
                 return tok.Token(tok_type, literal) # already called read_next_char to build ident
             elif self.c.isdigit():
                 literal = self.read_number()
                 tok_type = tok.INT
-                print(tok_type, literal)
                 return tok.Token(tok_type, literal)
             else:
-                #print(f'in ILLEGAL else with {self.c}:{type(self.c)}')
-                print(f'in illegal with {self.c} {type(self.c)}')
                 token = tok.Token(tok.ILLEGAL, self.c)
 
         self.read_next_char()
-        #print(f'position: {self.position} next_position: {self.next_position}')
         
-        print(token)
         return token
 
     def read_next_char(self):
