@@ -12,6 +12,9 @@ class LetStatement():
     def token_literal(self):
         return self.token.literal
 
+    def __repr__(self):
+        return f'LetStatement token: { self.token } identifier: { self.identifier } value: { self.value }'
+
 class Identifier():
     def __init__(self, token=None, value=None):
         self.token = token
