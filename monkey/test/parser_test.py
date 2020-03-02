@@ -20,3 +20,19 @@ def test_let_statements():
         assert statement.token_literal() == 'let'
         assert statement.identifier.value == expected_idents[i]
 
+def test_return_statements():
+    program_input = '''return 4;
+    return 5;
+    return four * five;'''
+
+    l = Lexer(program_input)
+    p = Parser(l)
+
+    program = p.parse_program()
+
+    assert program != None
+    assert len(program.statements) == 3
+
+    for statement in program.statements:
+        assert statement.token_literal() == 'return'
+

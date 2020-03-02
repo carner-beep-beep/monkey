@@ -1,4 +1,4 @@
-from monkey.interpreter.ast import Program, LetStatement, Identifier
+from monkey.interpreter.ast import Program, LetStatement, Identifier, ReturnStatement
 from monkey.interpreter import token
 
 class Parser():
@@ -67,7 +67,16 @@ class Parser():
         return let_stmt
 
     def parse_return_statement(self):
-        pass
+        return_stmt = ReturnStatement()
+        return_stmt.token = self.cur_token
+
+        self.next_token()
+
+        while not self.cur_token_is(token.SEMICOLON):
+            print('looping!')
+            self.next_token()
+
+        return return_stmt
 
     def cur_token_is(self, tok_type):
         return self.cur_token.type == tok_type
