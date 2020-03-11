@@ -30,3 +30,11 @@ class Identifier():
 
     def token_literal():
         return self.token.literal
+
+class ExpressionStatement():
+    def __init__(self, token=None, expression=None):
+        self.token = token
+        self.expression = expression
+
+    def token_literal(self):
+        return self.token.literal

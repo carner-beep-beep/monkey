@@ -1,3 +1,4 @@
+from monkey.interpreter import token
 from monkey.interpreter.lexer import Lexer
 from monkey.interpreter.parser import Parser
 
@@ -36,3 +37,20 @@ def test_return_statements():
     for statement in program.statements:
         assert statement.token_literal() == 'return'
 
+def test_identifier_expression():
+    program_in = 'foobar;'
+
+    l = Lexer(program_in)
+    p = Parser(l)
+
+    program = p.parse_program()
+
+    assert program != None
+
+    assert len(program.statements) == 1
+
+    expr_stmt = program.statements[0]
+    print(expr_stmt)
+
+    assert expr_stmt.token.type == token.IDENT
+    assert expr_stmt.token_literal() == 'foobar'

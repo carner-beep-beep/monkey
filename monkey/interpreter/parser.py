@@ -1,5 +1,15 @@
-from monkey.interpreter.ast import Program, LetStatement, Identifier, ReturnStatement
+from monkey.interpreter.ast import Program, LetStatement, Identifier, ReturnStatement, \
+        ExpressionStatement
 from monkey.interpreter import token
+
+# precedence - order of op
+LOWEST = 0
+EQUALS = 1
+LESSGREATER = 2
+SUM = 3
+PRODUCT = 4
+PREFIX = 5
+CALL = 6
 
 class Parser():
     def __init__(self, lexer):
@@ -7,9 +17,19 @@ class Parser():
         self.cur_token = None
         self.peek_token = None
         self.errors = []
+        self.prefixParseFns = {}
+        self.infixParseFns = {}
 
         self.next_token()
         self.next_token()
+
+        self.registerParseFn('prefix', token.IDENT, self.parse_identifier)
+
+    def registerParseFn(self, parse_type, token_type, fn):
+        if parse_type == 'prefix':
+            self.prefixParseFns[token_type] = fn
+        elif parse_type == 'infix':
+            self.infixParseFns[token_type] = fn
 
     def next_token(self):
         self.cur_token = self.peek_token
@@ -36,7 +56,37 @@ class Parser():
         elif self.cur_token.type == token.RETURN:
             return self.parse_return_statement()
         else:
+            return self.parse_expression_statement()
+
+    def parse_expression_statement(self):
+        print(f'### parse_expression_statement: {self.cur_token}')
+        stmt = ExpressionStatement(token=self.cur_token)
+
+        stmt.expression = self.parse_expression(LOWEST)
+        
+        print(f'### parse_expression_statement peek: {self.peek_token}')
+        if self.peek_token.type == token.SEMICOLON:
+            self.next_token()
+        
+        print(f'### parse_expression_statement end: {self.cur_token}')
+        return stmt
+
+    def parse_expression(self, precedence):
+        prefix = self.prefixParseFns[self.cur_token.type]
+        print(f'### parse_expression: {prefix}')
+        if prefix == None:
             return None
+
+        leftExp = prefix()
+        return leftExp
+
+    def parse_identifier(self):
+        ident = Identifier(token=self.cur_token)
+        ident.value = ident.token.literal
+
+        print(f'### parse_identifier: {ident}')
+
+        return ident
 
     def parse_let_statement(self):
         print('in parse let statement')
