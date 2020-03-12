@@ -38,3 +38,20 @@ class ExpressionStatement():
 
     def token_literal(self):
         return self.token.literal
+
+class IntegerLiteral():
+    def __init__(self, token=None, value=None):
+        self.token = token
+        self.value = value
+
+    def __repr__(self):
+        return self.token.literal
+
+class PrefixExpression():
+    def __init__(self, token=None, op=None, expression=None):
+        self.token = token
+        self.op = op
+        self.expression = expression
+
+    def __repr__(self):
+        return self.token.literal

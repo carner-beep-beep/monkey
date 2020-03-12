@@ -1,5 +1,5 @@
 from monkey.interpreter.ast import Program, LetStatement, Identifier, ReturnStatement, \
-        ExpressionStatement
+        ExpressionStatement, IntegerLiteral, PrefixExpression
 from monkey.interpreter import token
 
 # precedence - order of op
@@ -24,6 +24,9 @@ class Parser():
         self.next_token()
 
         self.registerParseFn('prefix', token.IDENT, self.parse_identifier)
+        self.registerParseFn('prefix', token.INT, self.parse_integer_literal)
+        self.registerParseFn('prefix', token.BANG, self.parse_prefix_expression)
+        self.registerParseFn('prefix', token.MINUS, self.parse_prefix_expression)
 
     def registerParseFn(self, parse_type, token_type, fn):
         if parse_type == 'prefix':
@@ -75,6 +78,7 @@ class Parser():
         prefix = self.prefixParseFns[self.cur_token.type]
         print(f'### parse_expression: {prefix}')
         if prefix == None:
+            self.errors.append(f'no prefix parse function found for: {self.cur_token.type}')
             return None
 
         leftExp = prefix()
@@ -87,6 +91,23 @@ class Parser():
         print(f'### parse_identifier: {ident}')
 
         return ident
+
+    def parse_integer_literal(self):
+        lit = IntegerLiteral(token=self.cur_token)
+        lit.value = int(lit.token.literal)
+        
+        print(f'### parse_integer_literal: {lit}')
+        return lit
+    
+    def parse_prefix_expression(self):
+        expr = PrefixExpression(token=self.cur_token)
+        expr.op = expr.token.literal
+
+        self.next_token()
+        print(f'### parse_prefix_expression: {expr}')
+        expr.expression = self.parse_expression(PREFIX)
+
+        return expr
 
     def parse_let_statement(self):
         print('in parse let statement')

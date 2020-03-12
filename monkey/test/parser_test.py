@@ -54,3 +54,37 @@ def test_identifier_expression():
 
     assert expr_stmt.token.type == token.IDENT
     assert expr_stmt.token_literal() == 'foobar'
+
+def test_integer_literal_expression():
+    program_in = '1234;'
+    l = Lexer(program_in)
+    p = Parser(l)
+
+    program = p.parse_program()
+
+    assert program != None
+
+    assert len(program.statements) == 1
+
+    expr_stmt = program.statements[0]
+
+    assert expr_stmt.token.type == token.INT
+    assert expr_stmt.token_literal() == '1234'
+
+def test_parse_prefix_expression():
+    program_in = '!5; -15;'
+    l = Lexer(program_in)
+    p = Parser(l)
+
+    program = p.parse_program()
+    assert program != None
+    assert len(program.statements) == 2;
+    
+    expected = [(token.BANG, '!', 5), (token.MINUS, '-', 15)]
+    for i, stmt in enumerate(program.statements):
+        expr = stmt.expression # prefix expr
+        expect = expected[i]
+        assert expr.token.type == expect[0]
+        assert expr.op == expect[1]
+        assert expr.expression.value == expect[2]
+
