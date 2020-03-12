@@ -19,6 +19,14 @@ class Parser():
         self.errors = []
         self.prefixParseFns = {}
         self.infixParseFns = {}
+        self.precedences = { token.EQ: EQUALS,
+                             token.NOT_EQ: EQUALS,
+                             token.LT: LESSGREATER,
+                             token.GT: LESSGREATER,
+                             token.PLUS: SUM,
+                             token.MINUS: SUM,
+                             token.SLASH: PRODUCT,
+                             token.ASTERISK: PRODUCT }
 
         self.next_token()
         self.next_token()
@@ -27,6 +35,16 @@ class Parser():
         self.registerParseFn('prefix', token.INT, self.parse_integer_literal)
         self.registerParseFn('prefix', token.BANG, self.parse_prefix_expression)
         self.registerParseFn('prefix', token.MINUS, self.parse_prefix_expression)
+
+        self.registerParseFn('infix', token.PLUS, self.parse_infix_expression)
+        self.registerParseFn('infix', token.MINUS, self.parse_infix_expression)
+        self.registerParseFn('infix', token.SLASH, self.parse_infix_expression)
+        self.registerParseFn('infix', token.ASTERISK, self.parse_infix_expression)
+        self.registerParseFn('infix', token.EQ, self.parse_infix_expression)
+        self.registerParseFn('infix', token.NOT_EQ, self.parse_infix_expression)
+        self.registerParseFn('infix', token.LT, self.parse_infix_expression)
+        self.registerParseFn('infix', token.GT, self.parse_infix_expression)
+
 
     def registerParseFn(self, parse_type, token_type, fn):
         if parse_type == 'prefix':
@@ -109,6 +127,17 @@ class Parser():
 
         return expr
 
+    def parse_infix_expression(self, left_expr):
+        expr = InfixExpression(token=self.cur_token)
+        expr.left_expr = left_expr
+        expr.op = expr.token.literal
+
+        precedence = self.cur_precedence()
+        self.next_token()
+        expr.right = self.parse_expression(precedence)
+
+        return expr
+
     def parse_let_statement(self):
         print('in parse let statement')
         let_stmt = LetStatement()
@@ -158,4 +187,16 @@ class Parser():
         else:
             self.errors.append(f'Expected: { tok_type } Got: { self.peek_token.type }')
             return False
+
+    def peek_precedence(self):
+        prec = self.precedences[self.peek_token.type]
+        if prec:
+            return prec
+        return LOWEST
+
+    def cur_precedence(self):
+        prec = self.precedences[self.cur_token.type]
+        if prec:
+            return prec
+        return LOWEST
 

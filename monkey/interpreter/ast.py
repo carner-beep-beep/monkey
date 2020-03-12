@@ -55,3 +55,10 @@ class PrefixExpression():
 
     def __repr__(self):
         return self.token.literal
+
+class InfixExpression():
+    def __init__(self, token=None):
+        self.token = token
+        self.op = None
+        self.left_expr = None
+        self.right_expr = None
