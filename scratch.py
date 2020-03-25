@@ -1,7 +1,7 @@
 from monkey.interpreter.lexer import Lexer
 from monkey.interpreter.parser import Parser
 
-l = Lexer('!15;-4;')
+l = Lexer('5 + 5;')
 p = Parser(l)
 
 program = p.parse_program()

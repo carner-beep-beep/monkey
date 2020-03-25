@@ -1,5 +1,5 @@
 from monkey.interpreter.ast import Program, LetStatement, Identifier, ReturnStatement, \
-        ExpressionStatement, IntegerLiteral, PrefixExpression
+        ExpressionStatement, IntegerLiteral, PrefixExpression, InfixExpression
 from monkey.interpreter import token
 
 # precedence - order of op
@@ -93,6 +93,7 @@ class Parser():
         return stmt
 
     def parse_expression(self, precedence):
+        print(f'parse_expression current token: { self.cur_token }')
         prefix = self.prefixParseFns[self.cur_token.type]
         print(f'### parse_expression: {prefix}')
         if prefix == None:
@@ -100,6 +101,16 @@ class Parser():
             return None
 
         leftExp = prefix()
+
+        while self.peek_token.type != token.SEMICOLON and precedence < self.peek_precedence():
+            infix = self.infixParseFns[self.peek_token.type]
+            if infix is None:
+                return leftExp
+
+            self.next_token()
+
+            leftExp = infix(leftExp)
+
         return leftExp
 
     def parse_identifier(self):
@@ -134,7 +145,7 @@ class Parser():
 
         precedence = self.cur_precedence()
         self.next_token()
-        expr.right = self.parse_expression(precedence)
+        expr.right_expr = self.parse_expression(precedence)
 
         return expr
 

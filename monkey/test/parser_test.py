@@ -88,3 +88,21 @@ def test_parse_prefix_expression():
         assert expr.op == expect[1]
         assert expr.expression.value == expect[2]
 
+def test_parse_infix_expression():
+    program_in = '5 + 5;'
+    expected_result = (5, '+', 5)
+
+    l = Lexer(program_in)
+    p = Parser(l)
+
+    program = p.parse_program()
+
+    assert program != None
+    assert len(program.statements) == 1
+
+    expr_stmt = program.statements[0]
+    infix_expr = expr_stmt.expression
+
+    assert infix_expr.left_expr.value == expected_result[0]
+    assert infix_expr.op == expected_result[1]
+    assert infix_expr.right_expr.value == expected_result[2]
